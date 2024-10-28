@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>吃饭转盘</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .wheel-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        #wheel {
+            border: 16px solid #4CAF50;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 2s ease-out;
+        }
+        .slice {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background-color: #4CAF50;
+            transform-origin: 100% 100%;
+            clip-path: polygon(0% 100%, 100% 100%, 100% 0%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        #spin {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h2>选择早餐</h2>
+<div class="wheel-container">
+    <div id="breakfast-wheel" class="wheel"></div>
+</div>
+<button id="spin-breakfast">转动早餐</button>
+<p id="breakfast-result"></p>
+
+<h2>选择午餐</h2>
+<div class="wheel-container">
+    <div id="lunch-wheel" class="wheel"></div>
+</div>
+<button id="spin-lunch">转动午餐</button>
+<p id="lunch-result"></p>
+
+<h2>选择晚餐</h2>
+<div class="wheel-container">
+    <div id="dinner-wheel" class="wheel"></div>
+</div>
+<button id="spin-dinner">转动晚餐</button>
+<p id="dinner-result"></p>
+
+<script>
+    const breakfastOptions = [
+        '豆浆油条', '包子', '煎饼果子', '稀饭', '蛋饼',
+        '花卷', '油条', '葱油饼', '粥', '南方米粉',
+        '馄饨', '拌面', '酥饼', '牛奶', '蒸饺'
+    ]; // 早餐选项
+
+    const lunchOptions = [
+        '麻辣烫', '饺子', '火锅', '炒面', '米饭',
+        '宫保鸡丁', '番茄炒蛋', '酸辣汤', '凉皮', '炸鸡',
+        '羊肉泡馍', '牛肉面', '担担面', '葱爆羊肉', '东坡肉',
+        '黄焖鸡米饭', '鸡肉卷', '汉堡', '碗装米饭', '椒盐饼'
+    ]; // 午餐选项
+
+    const dinnerOptions = [
+        '糖醋里脊', '蒸鱼', '酸辣粉', '红烧肉', '小龙虾',
+        '青菜', '饺子', '炸酱面', '麻辣香锅', '素炒面',
+        '生煎包', '羊肉串', '小笼包', '烧烤', '奶茶',
+        '炸鸡翅', '披萨', '意大利面', '薯条', '咖喱饭'
+    ]; // 晚餐选项
+
+    function createWheel(wheelId, options) {
+        const wheel = document.getElementById(wheelId);
+        options.forEach((option, index) => {
+            const slice = document.createElement('div');
+            slice.className = 'slice';
+            slice.style.transform = `rotate(${index * (360 / options.length)}deg)`;
+            slice.textContent = option;
+            wheel.appendChild(slice);
+        });
+    }
+
+    createWheel('breakfast-wheel', breakfastOptions);
+    createWheel('lunch-wheel', lunchOptions);
+    createWheel('dinner-wheel', dinnerOptions);
+
+    function spinWheel(buttonId, wheelId, resultId, options) {
+        document.getElementById(buttonId).addEventListener('click', () => {
+            const randomDegree = Math.floor(Math.random() * 360) + 720;
+            document.getElementById(wheelId).style.transform = `rotate(${randomDegree}deg)`;
+
+            setTimeout(() => {
+                const winningSlice = options[Math.floor(((randomDegree % 360) / (360 / options.length)))];
+                document.getElementById(resultId).textContent = `你吃 ${winningSlice}！`;
+            }, 2000);
+        });
+    }
+
+    spinWheel('spin-breakfast', 'breakfast-wheel', 'breakfast-result', breakfastOptions);
+    spinWheel('spin-lunch', 'lunch-wheel', 'lunch-result', lunchOptions);
+    spinWheel('spin-dinner', 'dinner-wheel', 'dinner-result', dinnerOptions);
+</script>
+
+</body>
+</html>
