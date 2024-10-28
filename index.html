@@ -14,19 +14,19 @@
             background-color: #f4f4f4;
         }
         .wheel-container {
+            position: relative;
             display: flex;
-            justify-content: space-around;
-            width: 100%;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 20px;
         }
         #wheel {
-            border: 16px solid #4CAF50;
             border-radius: 50%;
-            width: 200px;
-            height: 200px;
+            width: 300px;
+            height: 300px;
             position: relative;
             overflow: hidden;
-            transition: transform 2s ease-out;
+            transition: transform 4s ease-out;
         }
         .slice {
             position: absolute;
@@ -42,13 +42,25 @@
             font-weight: bold;
             font-size: 14px;
         }
-        #spin {
+        #pointer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid red; /* 指针颜色 */
+        }
+        button {
             padding: 10px 20px;
             font-size: 18px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -57,23 +69,26 @@
 <h2>选择早餐</h2>
 <div class="wheel-container">
     <div id="breakfast-wheel" class="wheel"></div>
+    <div id="pointer"></div>
+    <button id="spin-breakfast">转动早餐</button>
+    <p id="breakfast-result"></p>
 </div>
-<button id="spin-breakfast">转动早餐</button>
-<p id="breakfast-result"></p>
 
 <h2>选择午餐</h2>
 <div class="wheel-container">
     <div id="lunch-wheel" class="wheel"></div>
+    <div id="pointer"></div>
+    <button id="spin-lunch">转动午餐</button>
+    <p id="lunch-result"></p>
 </div>
-<button id="spin-lunch">转动午餐</button>
-<p id="lunch-result"></p>
 
 <h2>选择晚餐</h2>
 <div class="wheel-container">
     <div id="dinner-wheel" class="wheel"></div>
+    <div id="pointer"></div>
+    <button id="spin-dinner">转动晚餐</button>
+    <p id="dinner-result"></p>
 </div>
-<button id="spin-dinner">转动晚餐</button>
-<p id="dinner-result"></p>
 
 <script>
     const breakfastOptions = [
@@ -98,10 +113,13 @@
 
     function createWheel(wheelId, options) {
         const wheel = document.getElementById(wheelId);
+        const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFC300', '#DAF7A6', '#581845', '#C70039', '#900C3F', '#FFC300'];
+        
         options.forEach((option, index) => {
             const slice = document.createElement('div');
             slice.className = 'slice';
             slice.style.transform = `rotate(${index * (360 / options.length)}deg)`;
+            slice.style.backgroundColor = colors[index % colors.length]; // 随机颜色
             slice.textContent = option;
             wheel.appendChild(slice);
         });
@@ -113,13 +131,13 @@
 
     function spinWheel(buttonId, wheelId, resultId, options) {
         document.getElementById(buttonId).addEventListener('click', () => {
-            const randomDegree = Math.floor(Math.random() * 360) + 720;
+            const randomDegree = Math.floor(Math.random() * 360) + 720; // 随机角度加上720度
             document.getElementById(wheelId).style.transform = `rotate(${randomDegree}deg)`;
 
             setTimeout(() => {
                 const winningSlice = options[Math.floor(((randomDegree % 360) / (360 / options.length)))];
                 document.getElementById(resultId).textContent = `你吃 ${winningSlice}！`;
-            }, 2000);
+            }, 4000); // 旋转动画后显示结果
         });
     }
 
@@ -130,3 +148,4 @@
 
 </body>
 </html>
+
